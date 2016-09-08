@@ -10,14 +10,14 @@ import (
 )
 
 var MqttClient *MQTT.Client
-
 var f MQTT.MessageHandler = func(client *MQTT.Client, msg MQTT.Message) {
 	//fmt.Printf("TOPIC: %s\n", msg.Topic())
 	//fmt.Printf("MSG: %s\n", msg.Payload())
+
 	if string(msg.Payload()) == "feed_fish" {
 		go HandleMessage(msg)
 	} else {
-		fmt.Println("Don't Understand Message")
+		fmt.Println("ERROR: Don't Understand Message")
 	}
 }
 
@@ -39,7 +39,7 @@ func StartMqttClient() {
 	if token := MqttClient.Connect(); token.Wait() && token.Error() != nil {
 		panic(token.Error())
 	}
-	if token := MqttClient.Subscribe("test", 0, nil); token.Wait() && token.Error() != nil {
+	if token := MqttClient.Subscribe("to_device", 0, nil); token.Wait() && token.Error() != nil {
 		fmt.Println(token.Error())
 		os.Exit(1)
 	}
@@ -47,11 +47,12 @@ func StartMqttClient() {
 
 func HandleMessage (msg MQTT.Message) (string, error) {
 	FeedFish()
+	SendMessage([]byte("Fed Fish"))
 	return "Feed", nil
 }
 
 func SendMessage(message []byte) error {
-	token := MqttClient.Publish("web_to_bot", 0, false, message)
+	token := MqttClient.Publish("to_web", 0, false, message)
 	token.Wait()
 	fmt.Println("Sending Message")
 
@@ -59,6 +60,6 @@ func SendMessage(message []byte) error {
 }
 
 func FeedFish() {
-	fmt.Println("IMPLEMENT FEEDING FISH HERE")
+	fmt.Println("feeding fish")
 	fmt.Println("")
 }
