@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"fmt"
+	"time"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/engine/standard"
@@ -45,21 +46,26 @@ func StartMqttClient() {
 	}
 }
 
-func HandleMessage (msg MQTT.Message) (string, error) {
-	FeedFish()
-	SendMessage([]byte("Fed Fish"))
-	return "Feed", nil
+func HandleMessage (msg MQTT.Message) {
+	fmt.Println("Task_Recieved: feed_fish")
+	SendMessage([]byte("Task_Recieved: feed_fish"))
+	err := FeedFish()
+	if err == nil {
+		fmt.Println("Task_Completed: feed_fish")
+		SendMessage([]byte("Task_Completed: feed_fish"))
+	} else {
+		SendMessage([]byte("Error: Could Not Feed Fish"))
+	}
 }
 
 func SendMessage(message []byte) error {
 	token := MqttClient.Publish("to_web", 0, false, message)
 	token.Wait()
-	fmt.Println("Sending Message")
 
 	return nil
 }
 
-func FeedFish() {
-	fmt.Println("feeding fish")
-	fmt.Println("")
+func FeedFish() error {
+	time.Sleep(4 * time.Second)
+	return nil
 }
