@@ -14,9 +14,8 @@ var MqttClient *MQTT.Client
 var f MQTT.MessageHandler = func(client *MQTT.Client, msg MQTT.Message) {
 	//fmt.Printf("TOPIC: %s\n", msg.Topic())
 	//fmt.Printf("MSG: %s\n", msg.Payload())
-
 	if string(msg.Payload()) == "feed_fish" {
-		go HandleMessage(msg)
+		go HandleFeedFish(msg)
 	} else {
 		fmt.Println("ERROR: Don't Understand Message")
 	}
@@ -24,10 +23,8 @@ var f MQTT.MessageHandler = func(client *MQTT.Client, msg MQTT.Message) {
 
 func main() {
   	fmt.Println("Starting Fish Feeder Device")
-
 	e := echo.New()
 	StartMqttClient()
-
 	fmt.Println("Running a Server on localhost:1323")
 	e.Run(standard.New(":1323"))
 }
@@ -46,7 +43,7 @@ func StartMqttClient() {
 	}
 }
 
-func HandleMessage (msg MQTT.Message) {
+func HandleFeedFish (msg MQTT.Message) {
 	fmt.Println("Task_Recieved: feed_fish")
 	SendMessage([]byte("Task_Recieved: feed_fish"))
 	err := FeedFish()
@@ -61,7 +58,6 @@ func HandleMessage (msg MQTT.Message) {
 func SendMessage(message []byte) error {
 	token := MqttClient.Publish("to_web", 0, false, message)
 	token.Wait()
-
 	return nil
 }
 
