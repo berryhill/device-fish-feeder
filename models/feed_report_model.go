@@ -10,19 +10,19 @@ type FeedReport struct {
 	Success 	bool          `json:"success"`
 }
 
-func NewFeedReport(id string, success bool) *Device {
-	d := new(FeedReport)
-	d.Id = id
-	d.Success = success
+func NewFeedReport(id string, success bool) *FeedReport {
+	fr := new(FeedReport)
+	fr.Id = id
+	fr.Success = success
 
-	return d
+	return fr
 }
 
-func (d *FeedReport) MarshalJson() ([]byte, error) {
-	return json.MarshalIndent(*d, "", "		")
+func (fr *FeedReport) MarshalJson() ([]byte, error) {
+	return json.MarshalIndent(*fr, "", "		")
 }
 
-func (d *FeedReport) UnmarshalJson(report_json []byte) error {
-	return json.Unmarshal(report_json, &d)
+func (fr *FeedReport) UnmarshalJson(report_json []byte) error {
+	return json.Unmarshal(report_json, &fr)
 }
 
