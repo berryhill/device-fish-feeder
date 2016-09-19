@@ -1,25 +1,31 @@
 package models
 
 import(
+	"time"
 	"encoding/json"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 type FeedReport struct {
-	Id			string        `json:"id"`
-	Timestamp	string        `json:"timestamp"`
-	Success 	bool          `json:"success"`
+	Id				bson.ObjectId        `json:"id"`
+	DeviceId 		string 		         `json:"device_id"`
+	Timestamp		time.Time        	 `json:"timestamp"`
+	Success 		bool          		 `json:"success"`
 }
 
-func NewFeedReport(id string, success bool) *FeedReport {
+func NewFeedReport(success bool, deviceId string) *FeedReport {
 	fr := new(FeedReport)
-	fr.Id = id
+	fr.DeviceId = deviceId
+	fr.Timestamp = time.Now()
+	fr.Id = bson.NewObjectId()
 	fr.Success = success
 
 	return fr
 }
 
 func (fr *FeedReport) MarshalJson() ([]byte, error) {
-	return json.MarshalIndent(*fr, "", "		")
+	return json.Marshal(*fr)
 }
 
 func (fr *FeedReport) UnmarshalJson(report_json []byte) error {

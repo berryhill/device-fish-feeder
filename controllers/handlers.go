@@ -28,11 +28,11 @@ func HandleFeedFish (msg MQTT.Message) {
 	}
 	if err == nil {
 		jsonStr := string(report_json)
-		message := Device.Id + " " + "report" + " " + "Pass" + " " + jsonStr
+		message := Device.Id + " " + "report" + " " + "pass" + " " + jsonStr
 		SendMessage([]byte(message))
 	} else {
 		jsonStr := string(report_json)
-		message := Device.Id + " " + "report" + " " + "Failed" + " " + jsonStr
+		message := Device.Id + " " + "report" + " " + "failed" + " " + jsonStr
 		SendMessage([]byte(message))
 	}
 }

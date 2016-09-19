@@ -19,10 +19,12 @@ var f MQTT.MessageHandler = func(client *MQTT.Client, msg MQTT.Message) {
 }
 
 func StartMqttClient() {
-	opts := MQTT.NewClientOptions().AddBroker("tcp://test.mosquitto.org:1883")
+	opts := MQTT.NewClientOptions().AddBroker("tcp://138.68.47.232:8883")
 	opts.SetClientID("devic")
 	//opts.SetClientID(Device)
 	opts.SetDefaultPublishHandler(f)
+	opts.SetUsername("mosquitto")
+	opts.SetPassword("amh05055")
 	MqttClient = MQTT.NewClient(opts)
 	if token := MqttClient.Connect(); token.Wait() && token.Error() != nil {
 		panic(token.Error())
